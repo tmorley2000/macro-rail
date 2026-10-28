@@ -1,0 +1,3 @@
+[submodule "lib/micropython-stepper"]
+	path = lib/micropython-stepper
+	url = https://github.com/redoxcode/micropython-stepper
