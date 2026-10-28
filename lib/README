@@ -1,4 +1,11 @@
-stepper https://pypi.org/project/micropython-stepper/
+micropython_stepper
+	https://pypi.org/project/micropython-stepper/
 	https://github.com/redoxcode/micropython-stepper
+
+micro-gui
+	https://github.com/peterhinch/micropython-micro-gui
+
+nano-gui
+	https://github.com/peterhinch/micropython-nano-gui
 	
 

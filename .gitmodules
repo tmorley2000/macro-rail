@@ -4,3 +4,6 @@
 [submodule "lib/micropython-micro-gui"]
 	path = lib/micropython-micro-gui
 	url = https://github.com/peterhinch/micropython-micro-gui
+[submodule "lib/micropython-nano-gui"]
+	path = lib/micropython-nano-gui
+	url = https://github.com/peterhinch/micropython-nano-gui
