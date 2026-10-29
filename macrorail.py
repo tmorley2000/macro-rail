@@ -1,7 +1,8 @@
-import hardware_setup
 import machine
 import time
+import gc
 from stepper import Stepper
+from SH1106.sh1106 import SH1106_I2C
 
 # Pin Numbers:
 # 4 switches
@@ -19,6 +20,18 @@ pinstepperdir=4
 # Camera remote
 pincamtip=0
 pincamring=1
+
+
+pindispsda=6
+pindispscl=7
+
+dispsda=machine.Pin(pindispsda)
+dispscl=machine.Pin(pindispscl)
+
+i2c=machine.I2C(1,sda=dispsda, scl=dispscl, freq=400000)
+
+gc.collect()
+display=SH1106_I2C(128,64,i2c,None,0x3c,rotate=180)
 
 
 # Camera Control
@@ -53,37 +66,12 @@ def steppertest():
 	time.sleep(1)
 
 
-from gui.core.ugui import Screen, ssd
-
-from gui.widgets import Label, Button, CloseButton
-from gui.core.writer import Writer
-import gui.fonts.arial10 as arial10
-from gui.core.colors import *
-
-class BaseScreen(Screen):
-
-    def __init__(self):
-
-        def my_callback(button, arg):
-            print('Button pressed', arg)
-        def move_callback(button, arg):
-            movemm(arg)
-
-        super().__init__()
-        wri = Writer(ssd, arial10, verbose=False)  # Monochrome display
-
-        col = 2
-        row = 2
-        Label(wri, row, col, 'Simple Demo')
-	Button(wri, 25, 2, text='in', callback=move_callback, args=(1,))
-	Button(wri, 25, 62, text='out', callback=move_callback, args=(-1,))
-        row = 50
-        Button(wri, row, col, text='Yes', callback=my_callback, args=('Yes',))
-        col += 60
-        Button(wri, row, col, text='No', callback=my_callback, args=('No',))
-        CloseButton(wri)  # Quit the application
-
 def main():
-	Screen.change(BaseScreen)
+	from umenu import umenu
+	menu=umenu.Menu(display,5,10)
+	menu.set_screen(umenu.MenuScreen('Main Menu'))
+	menu.draw()
+
+
 	
 

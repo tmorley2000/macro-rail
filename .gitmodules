@@ -1,9 +1,9 @@
 [submodule "lib/micropython-stepper"]
 	path = lib/micropython-stepper
 	url = https://github.com/redoxcode/micropython-stepper
-[submodule "lib/micropython-micro-gui"]
-	path = lib/micropython-micro-gui
-	url = https://github.com/peterhinch/micropython-micro-gui
-[submodule "lib/micropython-nano-gui"]
-	path = lib/micropython-nano-gui
-	url = https://github.com/peterhinch/micropython-nano-gui
+[submodule "lib/SH1106"]
+	path = lib/SH1106
+	url = https://github.com/robert-hh/SH1106/
+[submodule "lib/umenu"]
+	path = lib/umenu
+	url = https://github.com/plugowski/umenu

@@ -2,10 +2,19 @@ micropython_stepper
 	https://pypi.org/project/micropython-stepper/
 	https://github.com/redoxcode/micropython-stepper
 
-micro-gui
-	https://github.com/peterhinch/micropython-micro-gui
 
-nano-gui
-	https://github.com/peterhinch/micropython-nano-gui
+
+Don't use these, they work, but chew al CPU time, so stepper very uneven
+#micro-gui
+#	https://github.com/peterhinch/micropython-micro-gui
+#
+#nano-gui
+#	https://github.com/peterhinch/micropython-nano-gui
 	
+Instead
+ssh1106 driver
+	https://github.com/robert-hh/SH1106/
+
+umenus
+	https://github.com/plugowski/umenu
 
