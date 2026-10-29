@@ -1,3 +1,3 @@
-# import macrorail
+import macrorail
 
-#macrorail.steppertest()
+macrorail.main()

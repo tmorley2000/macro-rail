@@ -1,3 +1,4 @@
+import hardware_setup
 import machine
 import time
 from stepper import Stepper
@@ -52,5 +53,37 @@ def steppertest():
 	time.sleep(1)
 
 
+from gui.core.ugui import Screen, ssd
 
+from gui.widgets import Label, Button, CloseButton
+from gui.core.writer import Writer
+import gui.fonts.arial10 as arial10
+from gui.core.colors import *
+
+class BaseScreen(Screen):
+
+    def __init__(self):
+
+        def my_callback(button, arg):
+            print('Button pressed', arg)
+        def move_callback(button, arg):
+            movemm(arg)
+
+        super().__init__()
+        wri = Writer(ssd, arial10, verbose=False)  # Monochrome display
+
+        col = 2
+        row = 2
+        Label(wri, row, col, 'Simple Demo')
+	Button(wri, 25, 2, text='in', callback=move_callback, args=(1,))
+	Button(wri, 25, 62, text='out', callback=move_callback, args=(-1,))
+        row = 50
+        Button(wri, row, col, text='Yes', callback=my_callback, args=('Yes',))
+        col += 60
+        Button(wri, row, col, text='No', callback=my_callback, args=('No',))
+        CloseButton(wri)  # Quit the application
+
+def main():
+	Screen.change(BaseScreen)
+	
 
