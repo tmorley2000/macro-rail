@@ -8,4 +8,5 @@ mpremote fs mkdir :lib/umenu
 mpremote fs cp -r lib/umenu/src/* :lib/umenu
 
 
-mpremote soft-reset
+mpremote reset
+#mpremote soft-reset
