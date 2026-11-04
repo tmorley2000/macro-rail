@@ -1,8 +1,10 @@
+import micropython
 import machine
 import time
 import gc
 from stepper import Stepper
 from SH1106.sh1106 import SH1106_I2C
+from umenu import umenu
 
 # Pin Numbers:
 # 4 switches
@@ -52,11 +54,25 @@ stepper=Stepper(pinstepperstep,pinstepperdir,en_pin=pinsteppersleep,speed_sps=20
 stepper.enable(True)
 
 def movemm(mm):
-    # 200 steps per rev, 4 * microstepping, 4mm per rev
-    steps=mm*(200*4/4)
-    pos=stepper.get_pos()
-    stepper.target(pos+steps)
+    if stepper.is_target_reached():
+        # 200 steps per rev, 4 * microstepping, 4mm per rev
+        steps=mm*(200*4/4)
+        pos=stepper.get_pos()
+        stepper.target(pos+steps)
 
+def currentmm():
+    pos=stepper.get_pos()
+    return pos/(200*4/4)
+
+def setmm(mm):
+    steps=mm*(200*4/4)
+    stepper.stop()
+    stepper.overwrite_pos(steps)
+    stepper.target(steps)
+    stepper.track_target()
+
+def showcurrentmm():
+    return str(currentmm())
 
 def steppertest():
     for a in range(50):
@@ -65,13 +81,62 @@ def steppertest():
         movemm(-1)
 	time.sleep(1)
 
+menu=umenu.Menu(display,5,10)
+
+mainmenu=umenu.MenuScreen('Macro Rail')
+mainmenu=mainmenu.add(umenu.InfoItem('Status:', showcurrentmm))
+mainmenu=mainmenu.add(umenu.CallbackItem('Move In:', (movemm,-1)))
+mainmenu=mainmenu.add(umenu.CallbackItem('Move Out:', (movemm,1)))
+mainmenu=mainmenu.add(umenu.CallbackItem('Reset Pos:', (setmm,0)))
+
+menu.set_screen(mainmenu)
+
+#menu.set_screen(umenu.MenuScreen('Main Menu')
+#		.add(umenu.InfoItem('Status:', '1'))
+#		.add(umenu.InfoItem('Status:', '2'))
+#		.add(umenu.InfoItem('Status:', '3'))
+#		.add(umenu.InfoItem('Status:', '4'))
+#    .add(umenu.ValueItem('Speed', 10, 1, 100, 1, print))
+#    .add(umenu.EnumItem("Mode", ['Option 1', 'Option 2'], print, 0))
+#    .add(umenu.ConfirmItem("Print XXX", (print, 'XXX'), "Do you wanna do that?", ('yeah, sure!', 'nah, sorry!')))
+#    .add(umenu.InfoItem("TXT no action!"))
+#		)
+
+menu.draw()
+
+sw1=machine.Pin(pinsw1,machine.Pin.IN,machine.Pin.PULL_UP)
+sw2=machine.Pin(pinsw2,machine.Pin.IN,machine.Pin.PULL_UP)
+sw3=machine.Pin(pinsw3,machine.Pin.IN,machine.Pin.PULL_UP)
+sw4=machine.Pin(pinsw4,machine.Pin.IN,machine.Pin.PULL_UP)
+
+def menu_click(pin):
+    time.sleep_ms(50)
+    if pin.value() == 0:
+        menu.click()
+
+sw1.irq(menu_click, machine.Pin.IRQ_FALLING)
+
+def menu_next(pin):
+    time.sleep_ms(50)
+    if pin.value() == 0:
+        menu.move(1)
+
+sw2.irq(menu_next, machine.Pin.IRQ_FALLING)
+
+def menu_prev(pin):
+    time.sleep_ms(50)
+    if pin.value() == 0:
+        menu.move(-1)
+
+sw3.irq(menu_prev, machine.Pin.IRQ_FALLING)
+
+def menu_reset(pin):
+    time.sleep_ms(50)
+    if pin.value() == 0:
+        menu.reset()
+
+sw4.irq(menu_reset, machine.Pin.IRQ_FALLING)
+
 
 def main():
-	from umenu import umenu
-	menu=umenu.Menu(display,5,10)
-	menu.set_screen(umenu.MenuScreen('Main Menu'))
 	menu.draw()
-
-
-	
-
