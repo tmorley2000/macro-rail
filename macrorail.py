@@ -45,23 +45,25 @@ camring.value(0)
 def expose():
     print('Click')
     camring.value(1)
-    time.sleep(0.1)
+    time.sleep(0.25)
     camtip.value(1)
-    time.sleep(0.1)
+    time.sleep(0.5)
     camtip.value(0)
     camring.value(0)
+    time.sleep(0.25)
 
 stepper=Stepper(pinstepperstep,pinstepperdir,en_pin=pinsteppersleep,speed_sps=2000)
 stepper.enable(True)
 
 def waitmove():
-    print('waiting',stepper.is_target_reached())
+    print('waiting',stepper.is_target_reached(),stepper.get_pos())
     while not stepper.is_target_reached():
-        print("sleep")
+        print("sleep",stepper.get_pos())
         time.sleep(0.1)
+    print('At position',stepper.is_target_reached(),stepper.get_pos())
         
 def setmm(mm):
-    steps=mm*(200*4/4)
+    steps=int(mm*(200.0*4/4))
     stepper.stop()
     stepper.overwrite_pos(steps)
     stepper.target(steps)
@@ -69,13 +71,13 @@ def setmm(mm):
 
 def currentmm():
     pos=stepper.get_pos()
-    return pos/(200*4/4)
+    return pos/(200.0*4/4)
 
 def movetomm(mm):
     if stepper.is_target_reached():
         # 200 steps per rev, 4 * microstepping, 4mm per rev
-        steps=mm*(200*4/4)
-	print('Moving To',mm)
+        steps=int(mm*(200.0*4/4))
+	print('Moving To',mm,steps)
         stepper.target(steps)
     	waitmove()
 
@@ -94,8 +96,8 @@ def steppertest():
 	time.sleep(1)
 
 config={}
-config['step']=1.0
-config['count']=20
+config['step']=0.2
+config['count']=50
 
 def config_get(x):
 	return config.get(x,None)
